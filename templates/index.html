@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CoinDCX Trading App</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="logo-container">
+        <img src="/static/images/coindcx-logo.jpg" alt="CoinDCX Logo" class="logo" />
+      </div>      
+
+    <h1>CoinDCX Trading Panel</h1>
+
+    <form id="tradeForm" class="card">
+      <div class="form-group">
+        <label>API Key</label>
+        <input type="text" id="api_key" required />
+      </div>
+
+      <div class="form-group">
+        <label>API Secret</label>
+        <input type="password" id="api_secret" required />
+      </div>
+
+      <div class="form-group">
+        <label>Side</label>
+        <select id="side">
+          <option value="buy">Buy</option>
+          <option value="sell">Sell</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Market</label>
+        <input type="text" id="market" value="BTCUSDT" required />
+      </div>
+
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" step="0.0001" id="quantity" required />
+      </div>
+
+      <div class="form-group">
+        <label>Price</label>
+        <input type="number" step="0.01" id="price" required />
+      </div>
+
+      <div class="form-group checkbox">
+        <label>
+          <input type="checkbox" id="demo" checked />
+          Demo Mode
+        </label>
+      </div>
+
+      <button type="submit">Place Order</button>
+    </form>
+
+    <div class="response-box">
+      <h3>Response</h3>
+      <pre id="responseBox">Your order response will appear here...</pre>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("tradeForm").onsubmit = async function(e) {
+      e.preventDefault();
+
+      const response = await fetch("/place_order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          api_key: document.getElementById("api_key").value,
+          api_secret: document.getElementById("api_secret").value,
+          side: document.getElementById("side").value,
+          market: document.getElementById("market").value,
+          quantity: document.getElementById("quantity").value,
+          price: document.getElementById("price").value,
+          demo: document.getElementById("demo").checked
+        })
+      });
+
+      const result = await response.json();
+      document.getElementById("responseBox").innerText = JSON.stringify(result, null, 2);
+    };
+  </script>
+</body>
+</html>
